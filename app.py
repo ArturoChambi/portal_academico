@@ -62,6 +62,7 @@ def perfil():
 @app.route('/logout')
 def logout():
     session.clear()
+    flash("Sesion cerrada correctamente.")
     return redirect(url_for('index'))
 
 @app.route('/eliminar_cookie')
