@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, make_response,flash
 
 app = Flask(__name__)
 app.secret_key = 'clave_secreta'
@@ -20,7 +20,8 @@ cursos = [
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    usuario_preferido = request.cookies.get('usuario_preferido')
+    return render_template('index.html', usuario_preferido=usuario_preferido)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -34,8 +35,9 @@ def login():
         if username in usuarios and usuarios[username] == password:
            
             session['usuario'] = username
-            
-            return redirect(url_for('lista_cursos'))
+            respuesta = redirect(url_for('lista_cursos'))
+            respuesta.set_cookie('usuario_preferido', username, max_age=60*60*24*30)
+            return respuesta
         else:
             
             error = "Usuario o contraseña incorrectos."
@@ -62,6 +64,11 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
+@app.route('/eliminar_cookie')
+def eliminar_cookie():
+    respuesta = redirect(url_for('index'))
+    respuesta.delete_cookie('usuario_preferido')
+    return respuesta
 
 if __name__ == '__main__':
     app.run(debug=True)

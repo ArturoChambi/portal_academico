@@ -3,6 +3,10 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-    <h2>Bienvenido al Portal Académico</h2>
-    <p>Usa el menú superior para navegar entre las secciones.</p>
+    {% if usuario_preferido %}
+        <h2>Bienvenido nuevamente, {{ usuario_preferido }}.</h2>
+        <a href="{{ url_for('eliminar_cookie') }}">Eliminar cookie</a>
+    {% else %}
+        <h2>Bienvenido al Portal Académico.</h2>
+    {% endif %}
 {% endblock %}
